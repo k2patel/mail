@@ -1,0 +1,4 @@
+[DEFAULT]
+SMTP_SERVER = 192.168.1.1
+SMTP_PORT = 10025
+SENDER = system@mail.mail
