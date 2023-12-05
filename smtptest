@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+import smtplib
+import ssl
+import argparse
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+## Variables to Update
+SMTP_SERVER = "<Replace with SMTP Server>"
+CA_FILE = "/etc/pki/tls/certs/ca-bundle.crt"
+MAIL_SENDER = "test@test.com"
+MAIL_RECEPIENT = "test@test.com"
+STARTTLS = True
+##### Do not require any update further ######
+
+
+
+def main(hostname, ca_file, message, sender, recipient, subject, starttls):
+    # Create a MIME message
+    msg = MIMEMultipart()
+    msg['From'] = sender
+    msg['To'] = recipient
+    msg['Subject'] = subject
+
+    # Attach the email body
+    msg.attach(MIMEText(message, 'plain'))
+
+    if starttls:
+        # Connect to the SMTP server with STARTTLS
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH, cafile=ca_file)
+        context.options |= ssl.PROTOCOL_TLS  # Specify TLS as the protocol
+        try:
+            with smtplib.SMTP(hostname, 587) as server:
+                server.starttls(context=context)
+                server.sendmail(sender, recipient, msg.as_string())
+            print("Email sent successfully")
+        except Exception as e:
+            print(f"Error: {e}")
+    else:
+        # Connect to the SMTP server without STARTTLS
+        try:
+            with smtplib.SMTP(hostname, 25) as server:
+                server.sendmail(sender, recipient, msg.as_string())
+            print("Email sent successfully")
+        except Exception as e:
+            print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    """
+    Send email using smtplib, with or without starttls
+    """
+    parser = argparse.ArgumentParser(description="Send an email via SMTP")
+    parser.add_argument(
+        "--hostname",
+        "-H",
+        help="SMTP server hostname (e.g., smtp.example.com)",
+        default=SMTP_SERVER
+    )
+    parser.add_argument(
+        "--ca",
+        "-c",
+        help="Path to the CA file (e.g., /path/to/ca.pem)",
+        default=CA_FILE
+    )
+    parser.add_argument(
+        "--message",
+        "-m",
+        help="Email message"
+    )
+    parser.add_argument(
+        "--sender",
+        "-s",
+        help="Sender's email address",
+        default=MAIL_SENDER
+    )
+    parser.add_argument(
+        "--recipient",
+        "-r",
+        help="Recipient's email address",
+        default=MAIL_RECEPIENT
+    )
+    parser.add_argument(
+        "--subject",
+        "-S",
+        help="Email subject"
+    )
+    parser.add_argument(
+        "--starttls",
+        "-t",
+        help="Use STARTTLS",
+        action="store_true",
+        default=STARTTLS
+    )
+    args = parser.parse_args()
+    if not args.message and not args.subject:
+        parser.error("You must specify message and a subject")
+        parser.print_help()
+    else:
+        main(
+            hostname=args.hostname,
+            ca_file=args.ca,
+            message=args.message,
+            sender=args.sender,
+            recipient=args.recipient,
+            subject=args.subject,
+            starttls=args.starttls
+        )

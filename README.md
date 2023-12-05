@@ -1,4 +1,4 @@
-# mail
+# ./mail
 Simple mail program to replace mailx, since using local relay without authentication.
 
 ## Configfile
@@ -25,4 +25,33 @@ mail -s 'testing' -t xyz@yahoo.com
 adfaserw
 asdfasdfasd
 Ctrl + d
+```
+
+#./smtptest
+This program is written to test SMTP sending over TLS, specially when Certificate was signed by local CA.
+
+## Configfile
+ * no configuration require, just update the inscript variables at top.
+
+## Help
+```
+usage: smtptest [-h] [--hostname HOSTNAME] [--ca CA] [--message MESSAGE] [--sender SENDER] [--recipient RECIPIENT] [--subject SUBJECT]
+                [--starttls]
+
+Send an email via SMTP
+
+options:
+  -h, --help            show this help message and exit
+  --hostname HOSTNAME, -H HOSTNAME
+                        SMTP server hostname (e.g., smtp.example.com)
+  --ca CA, -c CA        Path to the CA file (e.g., /path/to/ca.pem)
+  --message MESSAGE, -m MESSAGE
+                        Email message
+  --sender SENDER, -s SENDER
+                        Sender's email address
+  --recipient RECIPIENT, -r RECIPIENT
+                        Recipient's email address
+  --subject SUBJECT, -S SUBJECT
+                        Email subject
+  --starttls, -t        Use STARTTLS
 ```
