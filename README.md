@@ -1,4 +1,4 @@
-# ./mail
+# [mail](./mail)
 Simple mail program to replace mailx, since using local relay without authentication.
 
 ## Configfile
@@ -27,7 +27,7 @@ asdfasdfasd
 Ctrl + d
 ```
 
-#./smtptest
+# [smtptest](./smtptest)
 This program is written to test SMTP sending over TLS, specially when Certificate was signed by local CA.
 
 ## Configfile
